@@ -19,7 +19,7 @@ class Train():
     def __init__(self, args):
 
 
-        self.train, self.valid, self.test = data_generator('./ISRUC/', args)
+        self.train, self.valid, self.test = data_generator('Data_preprocessing/data/ISRUC_S3/', args)
 
         self.args = args
         self.net = Model.FC_STGNN_SSC(args.patch_size,args.conv_out, args.lstmhidden_dim, args.lstmout_dim,args.conv_kernel,args.hidden_dim,args.time_denpen_len, args.num_sensor, args.num_windows,args.moving_window,args.stride, args.decay, args.pool_choice, args.n_class, args.dropout)

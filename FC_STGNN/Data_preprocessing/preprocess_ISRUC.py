@@ -3,9 +3,9 @@ import scipy.io as scio
 from os import path
 from scipy import signal
 
-path_Extracted = './data/ISRUC_S3/ExtractedChannels/'
-path_RawData   = './data/ISRUC_S3/RawData/'
-path_output    = './data/ISRUC_S3/'
+path_Extracted = 'D:/Java/FCSTGNN/FC_STGNN/ISRUC_S3/ExtractedChannels/'
+path_RawData   = 'D:/Java/FCSTGNN/FC_STGNN/ISRUC_S3/RawData/'
+path_output    = 'D:/Java/FCSTGNN/FC_STGNN/Data_preprocessing/data/ISRUC_S3/'
 channels = ['C3_A2', 'C4_A1', 'F3_A2', 'F4_A1', 'O1_A2', 'O2_A1',
             'LOC_A2', 'ROC_A1','X1', 'X2']
 
@@ -57,7 +57,51 @@ for sub in range(1, 11):
     fold_label.append(np.eye(5)[label])
     fold_psg.append(psg)
     fold_len.append(len(label))
+
+
 print('Preprocess over.')
+
+print(len(fold_psg))
+print(len(fold_label))
+print(len(fold_len))
+
+# max_len = max(len(psg) for psg in fold_psg)
+# for i in range(len(fold_psg)):
+#     if len(fold_psg[i]) < max_len:
+#         fold_psg[i] = np.pad(fold_psg[i], ((0, max_len - len(fold_psg[i])), (0, 0), (0, 0)), mode='constant')
+#     if len(fold_label[i]) < max_len:
+#         fold_label[i] = np.pad(fold_label[i], (0, max_len - len(fold_label[i])), mode='constant')
+
+
+
+
+# 找到最大样本数
+max_N = max(fold_psg[i].shape[0] for i in range(len(fold_psg)))
+
+# 填充 Fold_data
+for i in range(len(fold_psg)):
+    if fold_psg[i].shape[0] < max_N:
+        fold_psg[i] = np.pad(fold_psg[i], ((0, max_N - fold_psg[i].shape[0]), (0, 0), (0, 0)), mode='constant')
+
+# 填充 Fold_label
+for i in range(len(fold_label)):
+    if fold_label[i].shape[0] < max_N:
+        fold_label[i] = np.pad(fold_label[i], ((0, max_N - fold_label[i].shape[0]), (0, 0)), mode='constant')
+
+
+
+# for i, data in enumerate(fold_psg):
+#     print(f"Fold {i+1}: Fold_data shape = {data.shape}")
+#
+# for i, label in enumerate(fold_label):
+#     print(f"Fold {i + 1}: Fold_label shape = {label.shape}")
+#
+# for i, length in enumerate(fold_len):
+#     print(f"Fold {i+1}: Fold_len = {length}")
+
+
+
+
 
 np.savez(path.join(path_output, 'ISRUC_S3.npz'),
     Fold_data = fold_psg,
