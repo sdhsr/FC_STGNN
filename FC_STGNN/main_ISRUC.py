@@ -71,6 +71,15 @@ class Train():
                     prediction_.append(prediction)
                     real_.append(real)
 
+        # for i, data in enumerate(fold_psg):
+        #     print(f"Fold {i+1}: Fold_data shape = {data.shape}")
+        #
+        # for i, label in enumerate(fold_label):
+        #     print(f"Fold {i + 1}: Fold_label shape = {label.shape}")
+        #
+        # for i, length in enumerate(fold_len):
+        #     print(f"Fold {i+1}: Fold_len = {length}")
+                                                #---todo!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         np.save('./experiment/{}.npy'.format(self.args.save_name),[test_accu_, prediction_, real_])
 
     def cuda_(self, x):
