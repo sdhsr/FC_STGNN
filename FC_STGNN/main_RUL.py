@@ -131,6 +131,11 @@ class Train():
         test_score = np.stack(test_score,0)
 
         test_results = np.stack([test_RMSE, test_score],0)
+
+        # 确保目标目录存在
+        save_dir = './experiment'
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
         np.save('./experiment/{}.npy'.format(self.args.save_name),test_results)
 
     def cuda_(self, x):

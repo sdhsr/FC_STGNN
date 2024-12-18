@@ -57,6 +57,7 @@ class CMPDataIter(data.IterableDataset):
 
     def _get_data(self, data_root, data_set):
 
+        print(data_set)
         train_data_pt = os.path.join(data_root, 'CMAPSSData',  'train_'+ data_set +'.txt')
         assert os.path.exists(train_data_pt), 'data path does not exist: {:}'.format(train_data_pt)
         # print(train_data_pt)
@@ -139,7 +140,11 @@ class CMPDataIter(data.IterableDataset):
                     data=scaled_train,
                     index=  train.index,  
                     columns=train_data.columns[3:])
-            train_normalized = pd.concat([train_normalized, scaled_train_combine])
+
+            #train_normalized = pd.concat([train_normalized, scaled_train_combine])
+            # 修改后
+            scaled_train_combine = scaled_train_combine.dropna(how='all', axis=1)  # 移除全为 NA 的列
+            train_normalized = pd.concat([train_normalized, scaled_train_combine], axis=0)
 
             for test_idx, test in grouped_test:
                 if train_idx == test_idx:
@@ -148,7 +153,11 @@ class CMPDataIter(data.IterableDataset):
                             data=scaled_test,    
                             index=  test.index,  
                             columns=test_data.columns[3:])
-                    test_normalized = pd.concat([test_normalized, scaled_test_combine])
+                    #test_normalized = pd.concat([test_normalized, scaled_test_combine])
+                    # 修改后
+                    scaled_test_combine = scaled_test_combine.dropna(how='all', axis=1)  # 移除全为 NA 的列
+                    test_normalized = pd.concat([test_normalized, scaled_test_combine], axis=0)
+
 
         train_normalized = train_normalized.sort_index()
         test_normalized = test_normalized.sort_index()
@@ -500,3 +509,25 @@ class CMPDataIter_graph(data.IterableDataset):
 
         data_ls = np.stack(data_ls, 1)
         return data_ls
+
+    def __iter__(self):
+        """Yield batches of data."""
+        for x, ops, y in zip(self.out_x, self.out_ops, self.out_y):
+            yield {
+                "x": x,
+                "ops": ops,
+                "y": y
+            }
+
+    # def __iter__(self):
+    #     self.data = self.load_data()  # 加载数据
+    #     self.index = 0
+    #     return self
+    #
+    # def __next__(self):
+    #     if self.index < len(self.data):
+    #         result = self.data[self.index]
+    #         self.index += 1
+    #         return result
+    #     else:
+    #         raise StopIteration

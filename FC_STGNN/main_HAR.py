@@ -19,7 +19,7 @@ class Train():
     def __init__(self, args):
 
 
-        self.train, self.valid, self.test = data_generator('./HAR/', args=args)
+        self.train, self.valid, self.test = data_generator('UCI HAR Dataset/data/HAR', args=args)
 
         self.args = args
         self.net = Model.FC_STGNN_HAR(args.patch_size,args.conv_out, args.lstmhidden_dim, args.lstmout_dim,args.conv_kernel,args.hidden_dim,args.time_denpen_len, args.num_sensor, args.num_windows,args.moving_window,args.stride, args.decay, args.pool_choice, args.n_class)
@@ -64,7 +64,10 @@ class Train():
                     prediction_.append(prediction)
                     real_.append(real)
 
-        np.save('./experiment/{}.npy'.format(self.args.save_name),[test_accu_, prediction_, real_])
+       # np.save('./experiment/{}.npy'.format(self.args.save_name),[test_accu_, prediction_, real_])
+        #修改后
+        np.savez('./experiment/{}.npz'.format(self.args.save_name), test_accu=test_accu_, prediction=prediction_,
+                 real=real_)
 
     def cuda_(self, x):
         x = tr.Tensor(np.array(x))

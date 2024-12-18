@@ -3,8 +3,8 @@ import torch
 import os
 import numpy as np
 
-data_dir = 'UCI HAR Dataset'
-output_dir = '../../data/HAR'
+data_dir = 'D:/Java/FCSTGNN/FC_STGNN/UCI HAR Dataset'
+output_dir = 'D:/Java/FCSTGNN/FC_STGNN/UCI HAR Dataset/data/HAR'
 
 subject_data = np.loadtxt(f'{data_dir}/train/subject_train.txt')
 # Samples
@@ -47,6 +47,7 @@ X_train, X_val, y_train, y_val = train_test_split(train_data, train_labels, test
 dat_dict = dict()
 dat_dict["samples"] = torch.from_numpy(X_train)
 dat_dict["labels"] = torch.from_numpy(y_train)
+os.makedirs(output_dir, exist_ok=True)  # 如果目录不存在，会自动创建
 torch.save(dat_dict, os.path.join(output_dir, "train.pt"))
 
 dat_dict = dict()
